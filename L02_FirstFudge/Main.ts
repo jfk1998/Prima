@@ -9,7 +9,6 @@ function handleLoad(): void {
     let Viewport: fudge.Viewport = new fudge.Viewport();
 
 
-
 }
    
 
