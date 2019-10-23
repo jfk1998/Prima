@@ -3,18 +3,48 @@ var L03_Pong;
 (function (L03_Pong) {
     var fudge = FudgeCore;
     window.addEventListener("load", handleLoad);
+    window.addEventListener("keydown", handleKeyDown);
     let nodeBall = new fudge.Node("Ball");
     let nodePaddleLeft = new fudge.Node("PaddleLeft");
     let nodePaddleRight = new fudge.Node("PaddleRight");
+    let viewport;
     function handleLoad() {
         let canvas = document.querySelector("canvas");
         fudge.RenderManager.initialize();
         let cam = new fudge.ComponentCamera();
         cam.pivot.translateZ(6);
-        let viewport = new fudge.Viewport();
+        viewport = new fudge.Viewport();
         let sceneNode = createScene();
         viewport.initialize("Viewport", sceneNode, cam, canvas);
         viewport.draw();
+    }
+    function handleKeyDown(event) {
+        switch (event.keyCode) {
+            case 87:
+                {
+                    nodePaddleLeft.getComponent(fudge.ComponentMesh).pivot.translateY(0.1);
+                    viewport.draw();
+                    break;
+                }
+            case 83:
+                {
+                    nodePaddleLeft.getComponent(fudge.ComponentMesh).pivot.translateY(-0.1);
+                    viewport.draw();
+                    break;
+                }
+            case 38:
+                {
+                    nodePaddleRight.getComponent(fudge.ComponentMesh).pivot.translateY(0.1);
+                    viewport.draw();
+                    break;
+                }
+            case 40:
+                {
+                    nodePaddleRight.getComponent(fudge.ComponentMesh).pivot.translateY(-0.1);
+                    viewport.draw();
+                    break;
+                }
+        }
     }
     function createScene() {
         //setup Meshs and Materials

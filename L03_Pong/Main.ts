@@ -1,10 +1,13 @@
 namespace L03_Pong {
 import fudge = FudgeCore;
 window.addEventListener("load", handleLoad);
+window.addEventListener("keydown", handleKeyDown);
 
 let nodeBall: fudge.Node = new fudge.Node("Ball");
 let nodePaddleLeft: fudge.Node = new fudge.Node("PaddleLeft");
 let nodePaddleRight: fudge.Node = new fudge.Node("PaddleRight");
+
+let viewport: fudge.Viewport;
 
 function handleLoad(): void {
     let canvas: HTMLCanvasElement = document.querySelector("canvas");
@@ -15,7 +18,7 @@ function handleLoad(): void {
     let cam: fudge.ComponentCamera = new fudge.ComponentCamera();
     cam.pivot.translateZ(6);
 
-    let viewport: fudge.Viewport = new fudge.Viewport();
+    viewport = new fudge.Viewport();
 
 
 
@@ -23,6 +26,39 @@ function handleLoad(): void {
     viewport.initialize("Viewport", sceneNode, cam , canvas );
 
     viewport.draw();
+}
+
+function handleKeyDown(event: KeyboardEvent): void
+{
+   switch (event.keyCode)
+   {
+        case 87: 
+        {
+            (nodePaddleLeft.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(0.1);
+            viewport.draw();
+            break;
+        }
+        case 83:
+        {
+            (nodePaddleLeft.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(-0.1);
+            viewport.draw();
+            break;
+
+        }
+        case 38:
+        {
+            (nodePaddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(0.1);
+            viewport.draw();
+            break;
+        }
+        case 40:
+        {
+            (nodePaddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(-0.1);
+            viewport.draw();
+            break;
+        }
+        
+   }
 }
 
 function createScene(): fudge.Node {
