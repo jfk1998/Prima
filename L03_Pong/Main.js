@@ -4,10 +4,12 @@ var L03_Pong;
     var fudge = FudgeCore;
     window.addEventListener("load", handleLoad);
     window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
     let nodeBall = new fudge.Node("Ball");
     let nodePaddleLeft = new fudge.Node("PaddleLeft");
     let nodePaddleRight = new fudge.Node("PaddleRight");
     let viewport;
+    let keysPressed = {};
     function handleLoad() {
         let canvas = document.querySelector("canvas");
         fudge.RenderManager.initialize();
@@ -16,35 +18,33 @@ var L03_Pong;
         viewport = new fudge.Viewport();
         let sceneNode = createScene();
         viewport.initialize("Viewport", sceneNode, cam, canvas);
+        fudge.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, updateLoopFrame);
+        fudge.Loop.start();
+        viewport.draw();
+    }
+    function updateLoopFrame(_event) {
+        // Controls
+        if (keysPressed[fudge.KEYBOARD_CODE.W]) {
+            nodePaddleLeft.cmpTransform.local.translateY(0.1);
+        }
+        if (keysPressed[fudge.KEYBOARD_CODE.S]) {
+            nodePaddleLeft.cmpTransform.local.translateY(-0.1);
+        }
+        if (keysPressed[fudge.KEYBOARD_CODE.ARROW_UP]) {
+            nodePaddleRight.cmpTransform.local.translateY(0.1);
+        }
+        if (keysPressed[fudge.KEYBOARD_CODE.ARROW_DOWN]) {
+            nodePaddleRight.cmpTransform.local.translateY(-0.1);
+        }
+        //update Scene
+        fudge.RenderManager.update();
         viewport.draw();
     }
     function handleKeyDown(event) {
-        switch (event.keyCode) {
-            case 87:
-                {
-                    nodePaddleLeft.getComponent(fudge.ComponentMesh).pivot.translateY(0.1);
-                    viewport.draw();
-                    break;
-                }
-            case 83:
-                {
-                    nodePaddleLeft.getComponent(fudge.ComponentMesh).pivot.translateY(-0.1);
-                    viewport.draw();
-                    break;
-                }
-            case 38:
-                {
-                    nodePaddleRight.getComponent(fudge.ComponentMesh).pivot.translateY(0.1);
-                    viewport.draw();
-                    break;
-                }
-            case 40:
-                {
-                    nodePaddleRight.getComponent(fudge.ComponentMesh).pivot.translateY(-0.1);
-                    viewport.draw();
-                    break;
-                }
-        }
+        keysPressed[event.code] = true;
+    }
+    function handleKeyUp(event) {
+        keysPressed[event.code] = false;
     }
     function createScene() {
         //setup Meshs and Materials
