@@ -18,12 +18,9 @@ namespace L03_Pong {
     let keysPressed: keyPress = {};
 
 
-    let ballStartdirection: fudge.Vector3 = null;
-    let ballVelocity: number = 0.05;
-    let randomNumberX = getRandomSign() * Math.random() / 5;
-    let randomNumberY = getRandomSign() * Math.random() / 5;
+    let ballStartdirection: fudge.Vector3 = new fudge.Vector3(getRandomSign() * Math.random() / 5,getRandomSign() * Math.random() / 5, 0 );
+   
 
-    
 
     let canvasHeight = 12;
     let canvasLength = 20;
@@ -43,9 +40,6 @@ namespace L03_Pong {
 
         let sceneNode: fudge.Node = createScene();
         viewport.initialize("Viewport", sceneNode, cam, canvas);
-
-        ballStartdirection = new fudge.Vector3(randomNumberX , randomNumberY, 0 );
-       // ballStartdirection.scale(ballVelocity);
 
         fudge.Loop.addEventListener(fudge.EVENT.LOOP_FRAME, updateLoopFrame);
         fudge.Loop.start();
@@ -86,13 +80,13 @@ namespace L03_Pong {
         ballPosition = nodeBall.cmpTransform.local.translation;
         if(ballPosition.x > (canvasLength/2) || ballPosition.x < -(canvasLength/2) )
         {
-            ballStartdirection = new fudge.Vector3(-randomNumberX , randomNumberY, 0 );
+            ballStartdirection.x = -ballStartdirection.x;
             //ballStartdirection.scale(ballVelocity);
 
         }
         if(ballPosition.y > (canvasHeight/2) || ballPosition.y < -(canvasHeight/2) )
         {
-            ballStartdirection = new fudge.Vector3(randomNumberX , -randomNumberY, 0 );
+            ballStartdirection.y = -ballStartdirection.y;
            // ballStartdirection.scale(ballVelocity);
 
         }

@@ -10,10 +10,7 @@ var L03_Pong;
     let nodePaddleRight = new fudge.Node("PaddleRight");
     let viewport;
     let keysPressed = {};
-    let ballStartdirection = null;
-    let ballVelocity = 0.05;
-    let randomNumberX = getRandomSign() * Math.random() / 5;
-    let randomNumberY = getRandomSign() * Math.random() / 5;
+    let ballStartdirection = new fudge.Vector3(getRandomSign() * Math.random() / 5, getRandomSign() * Math.random() / 5, 0);
     let canvasHeight = 12;
     let canvasLength = 20;
     let ballPosition;
@@ -25,8 +22,6 @@ var L03_Pong;
         viewport = new fudge.Viewport();
         let sceneNode = createScene();
         viewport.initialize("Viewport", sceneNode, cam, canvas);
-        ballStartdirection = new fudge.Vector3(randomNumberX, randomNumberY, 0);
-        // ballStartdirection.scale(ballVelocity);
         fudge.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, updateLoopFrame);
         fudge.Loop.start();
         viewport.draw();
@@ -51,11 +46,11 @@ var L03_Pong;
         //checkIfBallIsHittingWall
         ballPosition = nodeBall.cmpTransform.local.translation;
         if (ballPosition.x > (canvasLength / 2) || ballPosition.x < -(canvasLength / 2)) {
-            ballStartdirection = new fudge.Vector3(-randomNumberX, randomNumberY, 0);
+            ballStartdirection.x = -ballStartdirection.x;
             //ballStartdirection.scale(ballVelocity);
         }
         if (ballPosition.y > (canvasHeight / 2) || ballPosition.y < -(canvasHeight / 2)) {
-            ballStartdirection = new fudge.Vector3(randomNumberX, -randomNumberY, 0);
+            ballStartdirection.y = -ballStartdirection.y;
             // ballStartdirection.scale(ballVelocity);
         }
         //move ball 
