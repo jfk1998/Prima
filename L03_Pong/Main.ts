@@ -17,17 +17,35 @@ namespace L03_Pong {
 
     let keysPressed: keyPress = {};
 
+
+    let ballStartdirection: fudge.Vector3 = null;
+    let ballVelocity: number = 0.05;
+    let randomNumberX = getRandomSign() * Math.random();
+    let randomNumberY = getRandomSign() * Math.random();
+
+    
+
+    let canvasHeight = 12;
+    let canvasLength = 20;
+
+    let ballPosition;
+
+    
+
     function handleLoad(): void {
         let canvas: HTMLCanvasElement = document.querySelector("canvas");
         fudge.RenderManager.initialize();
 
         let cam: fudge.ComponentCamera = new fudge.ComponentCamera();
-        cam.pivot.translateZ(6);
+        cam.pivot.translateZ(20);
 
         viewport = new fudge.Viewport();
 
         let sceneNode: fudge.Node = createScene();
         viewport.initialize("Viewport", sceneNode, cam, canvas);
+
+        ballStartdirection = new fudge.Vector3(randomNumberX , randomNumberY, 0 );
+       // ballStartdirection.scale(ballVelocity);
 
         fudge.Loop.addEventListener(fudge.EVENT.LOOP_FRAME, updateLoopFrame);
         fudge.Loop.start();
@@ -36,11 +54,19 @@ namespace L03_Pong {
        
     }
 
+    function getRandomSign(): number
+    {
+        return Math.random() < 0.5 ? -1 : 1;
+    }
+
+
     function updateLoopFrame(_event: Event): void{
 
         // Controls
         if(keysPressed[fudge.KEYBOARD_CODE.W]){
-            nodePaddleLeft.cmpTransform.local.translateY(0.1);
+      
+         nodePaddleLeft.cmpTransform.local.translateY(0.1);
+            
         }
 
         if(keysPressed[fudge.KEYBOARD_CODE.S]){
@@ -56,7 +82,26 @@ namespace L03_Pong {
         }
       
 
+        //checkIfBallIsHittingWall
+        ballPosition = nodeBall.cmpTransform.local.translation;
+        if(ballPosition.x > (canvasLength/2) || ballPosition.x < -(canvasLength/2) )
+        {
+            ballStartdirection = new fudge.Vector3(-randomNumberX , randomNumberY, 0 );
+            //ballStartdirection.scale(ballVelocity);
+
+        }
+        if(ballPosition.y > (canvasHeight/2) || ballPosition.y < -(canvasHeight/2) )
+        {
+            ballStartdirection = new fudge.Vector3(randomNumberX , -randomNumberY, 0 );
+           // ballStartdirection.scale(ballVelocity);
+
+        }
+        //move ball 
+        nodeBall.cmpTransform.local.translate(ballStartdirection);
+
+
         //update Scene
+
         fudge.RenderManager.update();
         viewport.draw();
     }
@@ -87,7 +132,7 @@ namespace L03_Pong {
 
 
         //positioning
-        (nodeBall.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(0.2, 0.2, 0.2));
+        (nodeBall.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 1, 0));
 
 
         //create Player 1 paddle
@@ -101,8 +146,8 @@ namespace L03_Pong {
         nodePaddleLeft.addComponent(cmpTransformPaddleLeft);
 
         //positionin
-        nodePaddleLeft.cmpTransform.local.translateX(-2.5);
-        (nodePaddleLeft.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(0.2, 1.5, 0));
+        nodePaddleLeft.cmpTransform.local.translateX(-9);
+        (nodePaddleLeft.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 7, 0));
 
 
         //create Player 2 paddle
@@ -115,8 +160,8 @@ namespace L03_Pong {
         nodePaddleRight.addComponent(cmpTransformPaddleRight);
 
         //positioning
-        nodePaddleRight.cmpTransform.local.translateX(2.5);
-        (nodePaddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(0.2, 1.5, 0));
+        nodePaddleRight.cmpTransform.local.translateX(9);
+        (nodePaddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 7, 0));
 
 
         //ceate scene Node
