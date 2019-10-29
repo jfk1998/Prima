@@ -38,6 +38,7 @@ var L03_Pong;
         // Controls
         if (keysPressed[fudge.KEYBOARD_CODE.W]) {
             nodePaddleLeft.cmpTransform.local.translateY(0.1);
+            console.log(nodePaddleLeft.cmpTransform.local.translation.y);
         }
         if (keysPressed[fudge.KEYBOARD_CODE.S]) {
             nodePaddleLeft.cmpTransform.local.translateY(-0.1);

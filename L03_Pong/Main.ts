@@ -20,8 +20,8 @@ namespace L03_Pong {
 
     let ballStartdirection: fudge.Vector3 = null;
     let ballVelocity: number = 0.05;
-    let randomNumberX = getRandomSign() * Math.random();
-    let randomNumberY = getRandomSign() * Math.random();
+    let randomNumberX = getRandomSign() * Math.random() / 5;
+    let randomNumberY = getRandomSign() * Math.random() / 5;
 
     
 
@@ -65,7 +65,7 @@ namespace L03_Pong {
         // Controls
         if(keysPressed[fudge.KEYBOARD_CODE.W]){
            
-                nodePaddleLeft.cmpTransform.local.translateY(0.1);
+            nodePaddleLeft.cmpTransform.local.translateY(0.1);
             
         }
 
@@ -96,6 +96,8 @@ namespace L03_Pong {
            // ballStartdirection.scale(ballVelocity);
 
         }
+
+
         //move ball 
         nodeBall.cmpTransform.local.translate(ballStartdirection);
 
