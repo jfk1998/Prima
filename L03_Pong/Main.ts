@@ -64,8 +64,8 @@ namespace L03_Pong {
 
         // Controls
         if(keysPressed[fudge.KEYBOARD_CODE.W]){
-      
-         nodePaddleLeft.cmpTransform.local.translateY(0.1);
+           
+                nodePaddleLeft.cmpTransform.local.translateY(0.1);
             
         }
 
