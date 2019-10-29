@@ -12,8 +12,8 @@ var L03_Pong;
     let keysPressed = {};
     let ballStartdirection = null;
     let ballVelocity = 0.05;
-    let randomNumberX = getRandomSign() * Math.random();
-    let randomNumberY = getRandomSign() * Math.random();
+    let randomNumberX = getRandomSign() * Math.random() / 5;
+    let randomNumberY = getRandomSign() * Math.random() / 5;
     let canvasHeight = 12;
     let canvasLength = 20;
     let ballPosition;
@@ -38,7 +38,6 @@ var L03_Pong;
         // Controls
         if (keysPressed[fudge.KEYBOARD_CODE.W]) {
             nodePaddleLeft.cmpTransform.local.translateY(0.1);
-            console.log(nodePaddleLeft.cmpTransform.local.translation.y);
         }
         if (keysPressed[fudge.KEYBOARD_CODE.S]) {
             nodePaddleLeft.cmpTransform.local.translateY(-0.1);
