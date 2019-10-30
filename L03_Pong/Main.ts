@@ -116,8 +116,7 @@ namespace L03_Pong {
 
             }
 
-        } else return false;
-
+        }else return false;
         
     }
 
@@ -208,22 +207,6 @@ namespace L03_Pong {
 
 
         return sceneNode;
-    }
-
-
-    function decetHit(position: fudge.Vector3, node: fudge.Node ): boolean
-    {
-        let nodeObjectPositionX = node.cmpTransform.local.translation.x;
-        let nodeObjectPositionY = node.cmpTransform.local.translation.y;
-
-        let nodeObjectScaling: fudge.Vector3 = (node.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scaling;
-
-        let topLeft: fudge.Vector3 = new fudge.Vector3(nodeObjectPositionX - nodeObjectScaling.x/2, nodeObjectPositionY - nodeObjectScaling.y/2);
-        let bottomRight: fudge.Vector3 = new fudge.Vector3(nodeObjectPositionX + nodeObjectScaling.x/2, nodeObjectPositionY + nodeObjectScaling.y/2);
-        
-        if(position.x > topLeft.x || )
-           return true; 
-
     }
 
     function createWall(nodeName: string, borderHeight: number, borderLength: number): fudge.Node
