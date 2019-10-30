@@ -4,8 +4,8 @@ namespace L03_Pong {
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
 
-    interface keyPress{
-        [ code: string]: Boolean;
+    interface keyPress {
+        [code: string]: Boolean;
 
     }
 
@@ -18,16 +18,16 @@ namespace L03_Pong {
     let keysPressed: keyPress = {};
 
 
-    let ballStartdirection: fudge.Vector3 = new fudge.Vector3(getRandomSign() * Math.random() / 5,getRandomSign() * Math.random() / 5, 0 );
-   
+    let ballStartdirection: fudge.Vector3 = new fudge.Vector3(getRandomSign() * Math.random() / 5, getRandomSign() * Math.random() / 5, 0);
 
 
-    let canvasHeight = 12;
+
+    let canvasHeight = 14;
     let canvasLength = 20;
 
     let ballPosition;
 
-    
+
 
     function handleLoad(): void {
         let canvas: HTMLCanvasElement = document.querySelector("canvas");
@@ -45,69 +45,88 @@ namespace L03_Pong {
         fudge.Loop.start();
 
         viewport.draw();
-       
+
     }
 
-    function getRandomSign(): number
-    {
+    function getRandomSign(): number {
         return Math.random() < 0.5 ? -1 : 1;
     }
 
 
-    function updateLoopFrame(_event: Event): void{
+    function updateLoopFrame(_event: Event): void {
 
         // Controls
-        if(keysPressed[fudge.KEYBOARD_CODE.W]){
-           
+        if (keysPressed[fudge.KEYBOARD_CODE.W]) {
             nodePaddleLeft.cmpTransform.local.translateY(0.1);
-            
         }
 
-        if(keysPressed[fudge.KEYBOARD_CODE.S]){
+        if (keysPressed[fudge.KEYBOARD_CODE.S]) {
             nodePaddleLeft.cmpTransform.local.translateY(-0.1);
         }
 
-        if(keysPressed[fudge.KEYBOARD_CODE.ARROW_UP]){
+        if (keysPressed[fudge.KEYBOARD_CODE.ARROW_UP]) {
             nodePaddleRight.cmpTransform.local.translateY(0.1);
         }
 
-        if(keysPressed[fudge.KEYBOARD_CODE.ARROW_DOWN]){
+        if (keysPressed[fudge.KEYBOARD_CODE.ARROW_DOWN]) {
             nodePaddleRight.cmpTransform.local.translateY(-0.1);
         }
-      
+
 
         //checkIfBallIsHittingWall
         ballPosition = nodeBall.cmpTransform.local.translation;
-        if(ballPosition.x > (canvasLength/2) || ballPosition.x < -(canvasLength/2) )
-        {
+        if (ballPosition.x > (canvasLength / 2) || ballPosition.x < -(canvasLength / 2)) {
             ballStartdirection.x = -ballStartdirection.x;
             //ballStartdirection.scale(ballVelocity);
 
         }
-        if(ballPosition.y > (canvasHeight/2) || ballPosition.y < -(canvasHeight/2) )
-        {
+        if (ballPosition.y > (canvasHeight / 2) || ballPosition.y < -(canvasHeight / 2)) {
             ballStartdirection.y = -ballStartdirection.y;
-           // ballStartdirection.scale(ballVelocity);
+            // ballStartdirection.scale(ballVelocity);
 
         }
 
-
         //move ball 
         nodeBall.cmpTransform.local.translate(ballStartdirection);
-
+        
 
         //update Scene
 
         fudge.RenderManager.update();
         viewport.draw();
+
+    }
+
+    function detectHit(hitterPosition: fudge.Vector3, object: fudge.Node): boolean{
+        
+        let objectScaling: fudge.Vector3 = (object.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scaling;
+        let objectPosition: fudge.Vector3 = object.cmpTransform.local.translation;
+
+        let bottomRight: fudge.Vector3 = new fudge.Vector3(objectPosition.x + (objectScaling.x/2), objectPosition.y + (objectScaling.y/2),0 );
+        let topLeft: fudge.Vector3 = new fudge.Vector3(objectPosition.x - (objectScaling.x/2), objectPosition.y - (objectScaling.y/2));
+
+        //hitting from Right or Left
+        if(hitterPosition.x > topLeft.x && hitterPosition.x < bottomRight.x)
+        {
+             //hitting from top or Bottom
+            if(hitterPosition.y > topLeft.y && hitterPosition.y < bottomRight.y )
+            {
+
+                return true;
+
+            }
+
+        } else return false;
+
+        
     }
 
     function handleKeyDown(event: KeyboardEvent): void {
-        keysPressed[event.code] =  true;
+        keysPressed[event.code] = true;
     }
 
     function handleKeyUp(event: KeyboardEvent): void {
-        keysPressed[event.code] =  false;
+        keysPressed[event.code] = false;
     }
 
 
@@ -160,13 +179,70 @@ namespace L03_Pong {
         (nodePaddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 7, 0));
 
 
+        //createBorder
+        let wall1: fudge.Node = createWall("Wall1", canvasHeight, 1);
+        let wall2: fudge.Node = createWall("Wall2", canvasHeight, 1);
+        let wall3: fudge.Node = createWall("Wall3", 1, canvasLength);
+        let wall4: fudge.Node = createWall("Wall4", 1, canvasLength);
+
+        //position walls
+        wall1.cmpTransform.local.translateX(canvasLength/2);
+        wall2.cmpTransform.local.translateX(-canvasLength/2);
+
+        wall3.cmpTransform.local.translateY(-canvasHeight/2);
+        wall4.cmpTransform.local.translateY(-canvasHeight/2);
+
+
+        
         //ceate scene Node
         let sceneNode: fudge.Node = new fudge.Node("Scene");
         sceneNode.appendChild(nodePaddleLeft);
         sceneNode.appendChild(nodeBall);
         sceneNode.appendChild(nodePaddleRight);
+        sceneNode.appendChild(wall1);
+        sceneNode.appendChild(wall2);
+        sceneNode.appendChild(wall3);
+        sceneNode.appendChild(wall4);
+
+
+
 
         return sceneNode;
+    }
+
+
+    function decetHit(position: fudge.Vector3, node: fudge.Node ): boolean
+    {
+        let nodeObjectPositionX = node.cmpTransform.local.translation.x;
+        let nodeObjectPositionY = node.cmpTransform.local.translation.y;
+
+        let nodeObjectScaling: fudge.Vector3 = (node.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scaling;
+
+        let topLeft: fudge.Vector3 = new fudge.Vector3(nodeObjectPositionX - nodeObjectScaling.x/2, nodeObjectPositionY - nodeObjectScaling.y/2);
+        let bottomRight: fudge.Vector3 = new fudge.Vector3(nodeObjectPositionX + nodeObjectScaling.x/2, nodeObjectPositionY + nodeObjectScaling.y/2);
+        
+        if(position.x > topLeft.x || )
+           return true; 
+
+    }
+
+    function createWall(nodeName: string, borderHeight: number, borderLength: number): fudge.Node
+    {
+
+        let mesh: fudge.MeshQuad = new fudge.MeshQuad();
+        let mtrSolidWhite: fudge.Material = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(1, 1, 1, 1)));
+
+        let nodeBorder: fudge.Node = new fudge.Node(nodeName);
+        let cmpMeshBorder: fudge.ComponentMesh = new fudge.ComponentMesh(mesh);
+        let cmpMateriaBorder: fudge.ComponentMaterial = new fudge.ComponentMaterial(mtrSolidWhite);
+        let cmpTransformBorder: fudge.ComponentTransform = new fudge.ComponentTransform();
+        nodeBorder.addComponent(cmpMeshBorder);
+        nodeBorder.addComponent(cmpMateriaBorder);
+        nodeBorder.addComponent(cmpTransformBorder);
+
+        (nodeBorder.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(borderLength, borderHeight, 0));
+
+        return nodeBorder;
     }
 
 

@@ -11,7 +11,7 @@ var L03_Pong;
     let viewport;
     let keysPressed = {};
     let ballStartdirection = new fudge.Vector3(getRandomSign() * Math.random() / 5, getRandomSign() * Math.random() / 5, 0);
-    let canvasHeight = 12;
+    let canvasHeight = 14;
     let canvasLength = 20;
     let ballPosition;
     function handleLoad() {
@@ -59,6 +59,8 @@ var L03_Pong;
         fudge.RenderManager.update();
         viewport.draw();
     }
+    function detectHit(hitter, mtrx) {
+    }
     function handleKeyDown(event) {
         keysPressed[event.code] = true;
     }
@@ -98,12 +100,48 @@ var L03_Pong;
         //positioning
         nodePaddleRight.cmpTransform.local.translateX(9);
         nodePaddleRight.getComponent(fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 7, 0));
+        //createBorder
+        let wall1 = createWall("Wall1", canvasHeight, 1);
+        let wall2 = createWall("Wall2", canvasHeight, 1);
+        let wall3 = createWall("Wall3", 1, canvasLength);
+        let wall4 = createWall("Wall4", 1, canvasLength);
+        //position walls
+        wall1.cmpTransform.local.translateX(canvasLength / 2);
+        wall2.cmpTransform.local.translateX(-canvasLength / 2);
+        wall3.cmpTransform.local.translateY(-canvasHeight / 2);
+        wall4.cmpTransform.local.translateY(-canvasHeight / 2);
         //ceate scene Node
         let sceneNode = new fudge.Node("Scene");
         sceneNode.appendChild(nodePaddleLeft);
         sceneNode.appendChild(nodeBall);
         sceneNode.appendChild(nodePaddleRight);
+        sceneNode.appendChild(wall1);
+        sceneNode.appendChild(wall2);
+        sceneNode.appendChild(wall3);
+        sceneNode.appendChild(wall4);
         return sceneNode;
+    }
+    function decetHit(position, node) {
+        let nodeObjectPositionX = node.cmpTransform.local.translation.x;
+        let nodeObjectPositionY = node.cmpTransform.local.translation.y;
+        let nodeObjectScaling = node.getComponent(fudge.ComponentMesh).pivot.scaling;
+        let topLeft = new fudge.Vector3(nodeObjectPositionX - nodeObjectScaling.x / 2, nodeObjectPositionY - nodeObjectScaling.y / 2);
+        let bottomRight = new fudge.Vector3(nodeObjectPositionX + nodeObjectScaling.x / 2, nodeObjectPositionY + nodeObjectScaling.y / 2);
+        if (position.x > topLeft.x || )
+            return true;
+    }
+    function createWall(nodeName, borderHeight, borderLength) {
+        let mesh = new fudge.MeshQuad();
+        let mtrSolidWhite = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(1, 1, 1, 1)));
+        let nodeBorder = new fudge.Node(nodeName);
+        let cmpMeshBorder = new fudge.ComponentMesh(mesh);
+        let cmpMateriaBorder = new fudge.ComponentMaterial(mtrSolidWhite);
+        let cmpTransformBorder = new fudge.ComponentTransform();
+        nodeBorder.addComponent(cmpMeshBorder);
+        nodeBorder.addComponent(cmpMateriaBorder);
+        nodeBorder.addComponent(cmpTransformBorder);
+        nodeBorder.getComponent(fudge.ComponentMesh).pivot.scale(new fudge.Vector3(borderLength, borderHeight, 0));
+        return nodeBorder;
     }
 })(L03_Pong || (L03_Pong = {}));
 //# sourceMappingURL=Main.js.map
