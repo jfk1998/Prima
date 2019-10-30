@@ -1,3 +1,4 @@
+
 namespace L03_Pong {
     import fudge = FudgeCore;
     window.addEventListener("load", handleLoad);
@@ -9,9 +10,15 @@ namespace L03_Pong {
 
     }
 
+    let sceneNode: fudge.Node;
     let nodeBall: fudge.Node = new fudge.Node("Ball");
     let nodePaddleLeft: fudge.Node = new fudge.Node("PaddleLeft");
     let nodePaddleRight: fudge.Node = new fudge.Node("PaddleRight");
+    let wallLeft: fudge.Node;
+    let wallRight: fudge.Node;
+    let wallTop: fudge.Node; 
+    let wallBottom: fudge.Node;
+
 
     let viewport: fudge.Viewport;
 
@@ -20,12 +27,14 @@ namespace L03_Pong {
 
     let ballStartdirection: fudge.Vector3 = new fudge.Vector3(getRandomSign() * Math.random() / 5, getRandomSign() * Math.random() / 5, 0);
 
-
-
     let canvasHeight = 14;
     let canvasLength = 20;
 
     let ballPosition;
+
+    let paddleMovementUP: fudge.Vector3 = new fudge.Vector3(0,0.1,0);
+    let paddleMovementDown: fudge.Vector3 = new fudge.Vector3(0,-0.1,0);
+
 
 
 
@@ -57,50 +66,67 @@ namespace L03_Pong {
 
         // Controls
         if (keysPressed[fudge.KEYBOARD_CODE.W]) {
-            nodePaddleLeft.cmpTransform.local.translateY(0.1);
+            nodePaddleLeft.cmpTransform.local.translate(paddleMovementUP);
+            
         }
 
         if (keysPressed[fudge.KEYBOARD_CODE.S]) {
-            nodePaddleLeft.cmpTransform.local.translateY(-0.1);
+            nodePaddleLeft.cmpTransform.local.translate(paddleMovementDown);
+
         }
 
         if (keysPressed[fudge.KEYBOARD_CODE.ARROW_UP]) {
-            nodePaddleRight.cmpTransform.local.translateY(0.1);
+            nodePaddleRight.cmpTransform.local.translate(paddleMovementUP);
+
         }
 
         if (keysPressed[fudge.KEYBOARD_CODE.ARROW_DOWN]) {
-            nodePaddleRight.cmpTransform.local.translateY(-0.1);
+            nodePaddleRight.cmpTransform.local.translate(paddleMovementDown);
+
         }
 
+        ballPosition = nodeBall.cmpTransform.local.translation;
+
+        //CheckIfBallis hitting paddles
+        if(detectHit(ballPosition, nodePaddleLeft))
+         {
+             ballStartdirection.x = -ballStartdirection.x;
+             console.log("Ball is hitting left paddle");
+         }
+        if(detectHit(ballPosition, nodePaddleRight))
+         {
+             ballStartdirection.x = -ballStartdirection.x;
+         }
 
         //checkIfBallIsHittingWall
-        ballPosition = nodeBall.cmpTransform.local.translation;
-        if (ballPosition.x > (canvasLength / 2) || ballPosition.x < -(canvasLength / 2)) {
-            ballStartdirection.x = -ballStartdirection.x;
-            //ballStartdirection.scale(ballVelocity);
+        if( detectHit(ballPosition, wallLeft) || detectHit(ballPosition, wallRight))
+        {
+            sceneNode.removeChild(nodeBall);
+            console.log("Ball is hitting side walls");
 
         }
-        if (ballPosition.y > (canvasHeight / 2) || ballPosition.y < -(canvasHeight / 2)) {
+        if(detectHit(ballPosition, wallTop))
+        {
             ballStartdirection.y = -ballStartdirection.y;
-            // ballStartdirection.scale(ballVelocity);
-
         }
-
+        if(detectHit(ballPosition, wallBottom))
+        {
+            ballStartdirection.y = -ballStartdirection.y;
+        }
         //move ball 
         nodeBall.cmpTransform.local.translate(ballStartdirection);
         
 
         //update Scene
-
         fudge.RenderManager.update();
         viewport.draw();
 
     }
 
-    function detectHit(hitterPosition: fudge.Vector3, object: fudge.Node): boolean{
+    function detectHit(hitterPosition: fudge.Vector3, collisionObject: fudge.Node): boolean{
         
-        let objectScaling: fudge.Vector3 = (object.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scaling;
-        let objectPosition: fudge.Vector3 = object.cmpTransform.local.translation;
+        let objectScaling: fudge.Vector3 = (collisionObject.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scaling;
+        let objectPosition: fudge.Vector3 = collisionObject.cmpTransform.local.translation;
 
         let bottomRight: fudge.Vector3 = new fudge.Vector3(objectPosition.x + (objectScaling.x/2), objectPosition.y + (objectScaling.y/2),0 );
         let topLeft: fudge.Vector3 = new fudge.Vector3(objectPosition.x - (objectScaling.x/2), objectPosition.y - (objectScaling.y/2));
@@ -179,29 +205,29 @@ namespace L03_Pong {
 
 
         //createBorder
-        let wall1: fudge.Node = createWall("Wall1", canvasHeight, 1);
-        let wall2: fudge.Node = createWall("Wall2", canvasHeight, 1);
-        let wall3: fudge.Node = createWall("Wall3", 1, canvasLength);
-        let wall4: fudge.Node = createWall("Wall4", 1, canvasLength);
+        wallRight = createWall("Wall1", canvasHeight, 1);
+        wallLeft = createWall("Wall2", canvasHeight, 1);
+        wallTop = createWall("Wall3", 1, canvasLength);
+        wallBottom = createWall("Wall4", 1, canvasLength);
 
         //position walls
-        wall1.cmpTransform.local.translateX(canvasLength/2);
-        wall2.cmpTransform.local.translateX(-canvasLength/2);
+        wallRight.cmpTransform.local.translateX(canvasLength/2);
+        wallLeft.cmpTransform.local.translateX(-canvasLength/2);
 
-        wall3.cmpTransform.local.translateY(-canvasHeight/2);
-        wall4.cmpTransform.local.translateY(-canvasHeight/2);
+        wallTop.cmpTransform.local.translateY(-canvasHeight/2);
+        wallBottom.cmpTransform.local.translateY(canvasHeight/2);
 
 
         
         //ceate scene Node
-        let sceneNode: fudge.Node = new fudge.Node("Scene");
+        sceneNode = new fudge.Node("Scene");
         sceneNode.appendChild(nodePaddleLeft);
         sceneNode.appendChild(nodeBall);
         sceneNode.appendChild(nodePaddleRight);
-        sceneNode.appendChild(wall1);
-        sceneNode.appendChild(wall2);
-        sceneNode.appendChild(wall3);
-        sceneNode.appendChild(wall4);
+        sceneNode.appendChild(wallBottom);
+        sceneNode.appendChild(wallTop);
+        sceneNode.appendChild(wallRight);
+        sceneNode.appendChild(wallLeft);
 
 
 
@@ -213,7 +239,7 @@ namespace L03_Pong {
     {
 
         let mesh: fudge.MeshQuad = new fudge.MeshQuad();
-        let mtrSolidWhite: fudge.Material = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(1, 1, 1, 1)));
+        let mtrSolidWhite: fudge.Material = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(1, 0, 1, 1)));
 
         let nodeBorder: fudge.Node = new fudge.Node(nodeName);
         let cmpMeshBorder: fudge.ComponentMesh = new fudge.ComponentMesh(mesh);
