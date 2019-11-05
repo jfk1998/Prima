@@ -18,6 +18,8 @@ var L03_Pong;
     let ballStartdirection = new fudge.Vector3(getRandomSign() * Math.random() / 5, getRandomSign() * Math.random() / 5, 0);
     let canvasHeight = 14;
     let canvasLength = 20;
+    let pointsP1 = 0;
+    let pontsP2 = 0;
     let ballPosition;
     let paddleMovementUP = new fudge.Vector3(0, 0.1, 0);
     let paddleMovementDown = new fudge.Vector3(0, -0.1, 0);
@@ -54,15 +56,20 @@ var L03_Pong;
         //CheckIfBallis hitting paddles
         if (detectHit(ballPosition, nodePaddleLeft)) {
             ballStartdirection.x = -ballStartdirection.x;
-            console.log("Ball is hitting left paddle");
         }
         if (detectHit(ballPosition, nodePaddleRight)) {
             ballStartdirection.x = -ballStartdirection.x;
         }
         //checkIfBallIsHittingWall
-        if (detectHit(ballPosition, wallLeft) || detectHit(ballPosition, wallRight)) {
+        if (detectHit(ballPosition, wallLeft)) {
             sceneNode.removeChild(nodeBall);
-            console.log("Ball is hitting side walls");
+            pontsP2++;
+            document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
+        }
+        if (detectHit(ballPosition, wallRight)) {
+            sceneNode.removeChild(nodeBall);
+            pointsP1++;
+            document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
         }
         if (detectHit(ballPosition, wallTop)) {
             ballStartdirection.y = -ballStartdirection.y;

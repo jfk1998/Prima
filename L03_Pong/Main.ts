@@ -10,6 +10,8 @@ namespace L03_Pong {
 
     }
 
+
+
     let sceneNode: fudge.Node;
     let nodeBall: fudge.Node = new fudge.Node("Ball");
     let nodePaddleLeft: fudge.Node = new fudge.Node("PaddleLeft");
@@ -30,6 +32,9 @@ namespace L03_Pong {
     let canvasHeight = 14;
     let canvasLength = 20;
 
+    let pointsP1 = 0;
+    let pontsP2 = 0;
+
     let ballPosition;
 
     let paddleMovementUP: fudge.Vector3 = new fudge.Vector3(0,0.1,0);
@@ -40,6 +45,7 @@ namespace L03_Pong {
 
     function handleLoad(): void {
         let canvas: HTMLCanvasElement = document.querySelector("canvas");
+        
         fudge.RenderManager.initialize();
 
         let cam: fudge.ComponentCamera = new fudge.ComponentCamera();
@@ -91,7 +97,6 @@ namespace L03_Pong {
         if(detectHit(ballPosition, nodePaddleLeft))
          {
              ballStartdirection.x = -ballStartdirection.x;
-             console.log("Ball is hitting left paddle");
          }
         if(detectHit(ballPosition, nodePaddleRight))
          {
@@ -99,11 +104,20 @@ namespace L03_Pong {
          }
 
         //checkIfBallIsHittingWall
-        if( detectHit(ballPosition, wallLeft) || detectHit(ballPosition, wallRight))
+        if( detectHit(ballPosition, wallLeft))
         {
+  
             sceneNode.removeChild(nodeBall);
-            console.log("Ball is hitting side walls");
+            pontsP2++;
+            document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
 
+        }
+        if(detectHit(ballPosition, wallRight))
+        {
+           
+            sceneNode.removeChild(nodeBall);
+            pointsP1++;
+            document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
         }
         if(detectHit(ballPosition, wallTop))
         {
