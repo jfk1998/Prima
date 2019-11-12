@@ -21,13 +21,15 @@ namespace L03_Pong {
     let wallTop: fudge.Node; 
     let wallBottom: fudge.Node;
 
+    let hittedWall = false;
+
 
     let viewport: fudge.Viewport;
 
     let keysPressed: keyPress = {};
 
 
-    let ballStartdirection: fudge.Vector3 = new fudge.Vector3(getRandomSign() * Math.random() / 5, getRandomSign() * Math.random() / 5, 0);
+    let ballStartdirection: fudge.Vector3;
 
     let canvasHeight = 14;
     let canvasLength = 20;
@@ -54,6 +56,7 @@ namespace L03_Pong {
         viewport = new fudge.Viewport();
 
         let sceneNode: fudge.Node = createScene();
+        spawnBall();
         viewport.initialize("Viewport", sceneNode, cam, canvas);
 
         fudge.Loop.addEventListener(fudge.EVENT.LOOP_FRAME, updateLoopFrame);
@@ -72,22 +75,29 @@ namespace L03_Pong {
 
         // Controls
         if (keysPressed[fudge.KEYBOARD_CODE.W]) {
-            nodePaddleLeft.cmpTransform.local.translate(paddleMovementUP);
+           // nodePaddleLeft.cmpTransform.local.translate(paddleMovementUP);
+           nodePaddleLeft.cmpTransform.local.translateY(0.1);
+
             
         }
 
         if (keysPressed[fudge.KEYBOARD_CODE.S]) {
-            nodePaddleLeft.cmpTransform.local.translate(paddleMovementDown);
+            //nodePaddleLeft.cmpTransform.local.translate(paddleMovementDown);
+            nodePaddleLeft.cmpTransform.local.translateY(-0.1);
+
 
         }
 
         if (keysPressed[fudge.KEYBOARD_CODE.ARROW_UP]) {
-            nodePaddleRight.cmpTransform.local.translate(paddleMovementUP);
+           // nodePaddleRight.cmpTransform.local.translate(paddleMovementUP);
+           nodePaddleRight.cmpTransform.local.translateY(0.1);
+
 
         }
 
         if (keysPressed[fudge.KEYBOARD_CODE.ARROW_DOWN]) {
-            nodePaddleRight.cmpTransform.local.translate(paddleMovementDown);
+            //nodePaddleRight.cmpTransform.local.translate(paddleMovementDown);
+            nodePaddleRight.cmpTransform.local.translateY(-0.1);
 
         }
 
@@ -107,17 +117,32 @@ namespace L03_Pong {
         if( detectHit(ballPosition, wallLeft))
         {
   
-            sceneNode.removeChild(nodeBall);
-            pontsP2++;
-            document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
+            if(!hittedWall)
+            {
+                pontsP2++;
+                document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
+                hittedWall = true;
+                spawnBall();
+                hittedWall = false;
+            }       
 
         }
+
+        
         if(detectHit(ballPosition, wallRight))
         {
            
-            sceneNode.removeChild(nodeBall);
-            pointsP1++;
-            document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
+            if(!hittedWall)
+            {
+                sceneNode.removeChild(nodeBall);
+                pointsP1++;
+                document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
+                hittedWall = true;
+                spawnBall();
+                hittedWall = false;
+
+            }
+            
         }
         if(detectHit(ballPosition, wallTop))
         {
@@ -201,7 +226,7 @@ namespace L03_Pong {
 
         //positionin
         nodePaddleLeft.cmpTransform.local.translateX(-9);
-        (nodePaddleLeft.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 7, 0));
+        (nodePaddleLeft.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 4, 0));
 
 
         //create Player 2 paddle
@@ -215,7 +240,7 @@ namespace L03_Pong {
 
         //positioning
         nodePaddleRight.cmpTransform.local.translateX(9);
-        (nodePaddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 7, 0));
+        (nodePaddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 4, 0));
 
 
         //createBorder
@@ -268,6 +293,11 @@ namespace L03_Pong {
         return nodeBorder;
     }
 
+    function spawnBall()
+    {
+            nodeBall.cmpTransform.local.translation = (new fudge.Vector3(0, 0, 0));
+            ballStartdirection = new fudge.Vector3(getRandomSign() * Math.random() / 5, getRandomSign() * Math.random() / 5, 0);
+    }
 
 
 

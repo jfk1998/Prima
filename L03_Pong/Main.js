@@ -13,9 +13,10 @@ var L03_Pong;
     let wallRight;
     let wallTop;
     let wallBottom;
+    let hittedWall = false;
     let viewport;
     let keysPressed = {};
-    let ballStartdirection = new fudge.Vector3(getRandomSign() * Math.random() / 5, getRandomSign() * Math.random() / 5, 0);
+    let ballStartdirection;
     let canvasHeight = 14;
     let canvasLength = 20;
     let pointsP1 = 0;
@@ -30,6 +31,7 @@ var L03_Pong;
         cam.pivot.translateZ(20);
         viewport = new fudge.Viewport();
         let sceneNode = createScene();
+        spawnBall();
         viewport.initialize("Viewport", sceneNode, cam, canvas);
         fudge.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, updateLoopFrame);
         fudge.Loop.start();
@@ -41,16 +43,20 @@ var L03_Pong;
     function updateLoopFrame(_event) {
         // Controls
         if (keysPressed[fudge.KEYBOARD_CODE.W]) {
-            nodePaddleLeft.cmpTransform.local.translate(paddleMovementUP);
+            // nodePaddleLeft.cmpTransform.local.translate(paddleMovementUP);
+            nodePaddleLeft.cmpTransform.local.translateY(0.1);
         }
         if (keysPressed[fudge.KEYBOARD_CODE.S]) {
-            nodePaddleLeft.cmpTransform.local.translate(paddleMovementDown);
+            //nodePaddleLeft.cmpTransform.local.translate(paddleMovementDown);
+            nodePaddleLeft.cmpTransform.local.translateY(-0.1);
         }
         if (keysPressed[fudge.KEYBOARD_CODE.ARROW_UP]) {
-            nodePaddleRight.cmpTransform.local.translate(paddleMovementUP);
+            // nodePaddleRight.cmpTransform.local.translate(paddleMovementUP);
+            nodePaddleRight.cmpTransform.local.translateY(0.1);
         }
         if (keysPressed[fudge.KEYBOARD_CODE.ARROW_DOWN]) {
-            nodePaddleRight.cmpTransform.local.translate(paddleMovementDown);
+            //nodePaddleRight.cmpTransform.local.translate(paddleMovementDown);
+            nodePaddleRight.cmpTransform.local.translateY(-0.1);
         }
         ballPosition = nodeBall.cmpTransform.local.translation;
         //CheckIfBallis hitting paddles
@@ -62,14 +68,23 @@ var L03_Pong;
         }
         //checkIfBallIsHittingWall
         if (detectHit(ballPosition, wallLeft)) {
-            sceneNode.removeChild(nodeBall);
-            pontsP2++;
-            document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
+            if (!hittedWall) {
+                pontsP2++;
+                document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
+                hittedWall = true;
+                spawnBall();
+                hittedWall = false;
+            }
         }
         if (detectHit(ballPosition, wallRight)) {
-            sceneNode.removeChild(nodeBall);
-            pointsP1++;
-            document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
+            if (!hittedWall) {
+                sceneNode.removeChild(nodeBall);
+                pointsP1++;
+                document.querySelector("h2").innerHTML = "Points P1: " + pointsP1 + "  " + " Points P2: " + pontsP2;
+                hittedWall = true;
+                spawnBall();
+                hittedWall = false;
+            }
         }
         if (detectHit(ballPosition, wallTop)) {
             ballStartdirection.y = -ballStartdirection.y;
@@ -126,7 +141,7 @@ var L03_Pong;
         nodePaddleLeft.addComponent(cmpTransformPaddleLeft);
         //positionin
         nodePaddleLeft.cmpTransform.local.translateX(-9);
-        nodePaddleLeft.getComponent(fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 7, 0));
+        nodePaddleLeft.getComponent(fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 4, 0));
         //create Player 2 paddle
         let cmpMeshPaddleRight = new fudge.ComponentMesh(mesh);
         let cmpMateriaPaddleRight = new fudge.ComponentMaterial(mtrSolidWhite);
@@ -136,7 +151,7 @@ var L03_Pong;
         nodePaddleRight.addComponent(cmpTransformPaddleRight);
         //positioning
         nodePaddleRight.cmpTransform.local.translateX(9);
-        nodePaddleRight.getComponent(fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 7, 0));
+        nodePaddleRight.getComponent(fudge.ComponentMesh).pivot.scale(new fudge.Vector3(1, 4, 0));
         //createBorder
         wallRight = createWall("Wall1", canvasHeight, 1);
         wallLeft = createWall("Wall2", canvasHeight, 1);
@@ -170,6 +185,10 @@ var L03_Pong;
         nodeBorder.addComponent(cmpTransformBorder);
         nodeBorder.getComponent(fudge.ComponentMesh).pivot.scale(new fudge.Vector3(borderLength, borderHeight, 0));
         return nodeBorder;
+    }
+    function spawnBall() {
+        nodeBall.cmpTransform.local.translation = (new fudge.Vector3(0, 0, 0));
+        ballStartdirection = new fudge.Vector3(getRandomSign() * Math.random() / 5, getRandomSign() * Math.random() / 5, 0);
     }
 })(L03_Pong || (L03_Pong = {}));
 //# sourceMappingURL=Main.js.map
