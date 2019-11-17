@@ -25,7 +25,7 @@ namespace L07_FudgeCraft_Fragments {
             this.addComponent(cmpMaterial);
 
             let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position));
-            cmpTransform.local.scale(ƒ.Vector3.ONE(0.9));
+            cmpTransform.local.scale(ƒ.Vector3.ONE(0.99));
             this.addComponent(cmpTransform);
         }
 
