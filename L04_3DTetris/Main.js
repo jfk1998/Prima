@@ -20,23 +20,23 @@ var L07_FudgeCraft_Fragments;
         game = new fudge.Node("FudgeCraft");
         // let cube: Cube = new Cube(CUBE_TYPE.BLUE);
         let fragment = new L07_FudgeCraft_Fragments.Fragment(0);
-        // ƒ.Debug.log("Fragment", fragment);
+        // fudge.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform());
         game.appendChild(fragment);
         fragment = new L07_FudgeCraft_Fragments.Fragment(1);
-        // ƒ.Debug.log("Fragment", fragment);
+        // fudge.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(3))));
         game.appendChild(fragment);
         fragment = new L07_FudgeCraft_Fragments.Fragment(2);
-        // ƒ.Debug.log("Fragment", fragment);
+        // fudge.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(-3))));
         game.appendChild(fragment);
         fragment = new L07_FudgeCraft_Fragments.Fragment(3);
-        // ƒ.Debug.log("Fragment", fragment);
+        // fudge.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(6))));
         game.appendChild(fragment);
         fragment = new L07_FudgeCraft_Fragments.Fragment(4);
-        // ƒ.Debug.log("Fragment", fragment);
+        // fudge.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(-6))));
         game.appendChild(fragment);
         let cmpLight = new fudge.ComponentLight(new fudge.LightDirectional(fudge.Color.WHITE));
@@ -52,58 +52,53 @@ var L07_FudgeCraft_Fragments;
         window.addEventListener("keydown", hndKeyDown);
     }
     function updateLoopFrame() {
-        // //rotation
-        // if(blockIsRotating)
-        // {
-        //     for (let fragment of game.getChildren()) {
-        //         // fragment.cmpTransform.local.rotate(rotate);
-        //         getRotationForBlock()
-        //         fragment.cmpTransform.local.rotate(getRotationForBlock());
-        //         currentRotation =  fragment.cmpTransform.local.rotation;
-        //     }
-        // }
-        // console.log("update");
+        //rotation
+        if (blockIsRotating) {
+            for (let fragment of game.getChildren()) {
+                // fragment.cmpTransform.local.rotate(rotate);
+                getRotationForBlock();
+                fragment.cmpTransform.local.rotate(getRotationForBlock());
+                currentRotation = fragment.cmpTransform.local.rotation;
+            }
+        }
+        console.log("update");
         fudge.RenderManager.update();
         viewport.draw();
     }
     function hndKeyDown(_event) {
-        //let rotate: ƒ.Vector3 = ƒ.Vector3.ZERO();
+        //let rotate: fudge.Vector3 = fudge.Vector3.ZERO();
         switch (_event.code) {
             case fudge.KEYBOARD_CODE.ARROW_UP:
-                // if(!blockIsRotating)
-                // {
-                //     goalRotationX = 90;
-                //     currentRotation = ƒ.Vector3.ZERO()
-                //     blockIsRotating = true
-                // }
-                rotation.x = -90;
+                if (!blockIsRotating) {
+                    goalRotationX = 90;
+                    currentRotation = fudge.Vector3.ZERO();
+                    blockIsRotating = true;
+                }
+                //rotation.x = -90;
                 break;
             case fudge.KEYBOARD_CODE.ARROW_DOWN:
-                // if(!blockIsRotating)
-                // {
-                //     goalRotationX = -90;
-                //     currentRotation = ƒ.Vector3.ZERO()
-                //     blockIsRotating = true
-                rotation.x = 90;
-                // }                
+                if (!blockIsRotating) {
+                    goalRotationX = -90;
+                    currentRotation = fudge.Vector3.ZERO();
+                    blockIsRotating = true;
+                }
+                // rotation.x = 90;          
                 break;
             case fudge.KEYBOARD_CODE.ARROW_LEFT:
-                // if(!blockIsRotating)
-                // {
-                //     goalRotationY = 90;
-                //     currentRotation = ƒ.Vector3.ZERO()
-                //     blockIsRotating = true
-                rotation.y = -90;
-                // }                
+                if (!blockIsRotating) {
+                    goalRotationY = 90;
+                    currentRotation = fudge.Vector3.ZERO();
+                    blockIsRotating = true;
+                }
+                // rotation.y = -90;
                 break;
             case fudge.KEYBOARD_CODE.ARROW_RIGHT:
-                // if(!blockIsRotating)
-                // {
-                //     goalRotationY = -90;
-                //     currentRotation = ƒ.Vector3.ZERO()
-                //     blockIsRotating = true
-                rotation.y = 90;
-                // }   
+                if (!blockIsRotating) {
+                    goalRotationY = -90;
+                    currentRotation = fudge.Vector3.ZERO();
+                    blockIsRotating = true;
+                }
+                // rotation.y = 90;
                 break;
         }
         for (let fragment of game.getChildren()) {
@@ -111,24 +106,22 @@ var L07_FudgeCraft_Fragments;
             currentRotation = fragment.cmpTransform.local.rotation;
         }
     }
-    // function getRotationForBlock(): ƒ.Vector3
-    // {
-    //     if(goalRotationX < 0 && goalRotationX < currentRotation.x)
-    //     {
-    //          return new ƒ.Vector3(-1,0,0);
-    //     }else if(goalRotationX > 0 && goalRotationX > currentRotation.x)
-    //     {
-    //         return new ƒ.Vector3(1,0,0);
-    //     }else if(goalRotationY < 0 && goalRotationY < currentRotation.y)
-    //     {
-    //         return new ƒ.Vector3(0,-1,0);
-    //     }else if(goalRotationY > 0 && goalRotationY > currentRotation.y)
-    //     {
-    //         return new ƒ.Vector3(0,1,0);
-    //     }else
-    //     {
-    //         blockIsRotating = false;
-    //     }
-    // }
+    function getRotationForBlock() {
+        if (goalRotationX < 0 && goalRotationX < currentRotation.x) {
+            return new fudge.Vector3(-1, 0, 0);
+        }
+        else if (goalRotationX > 0 && goalRotationX > currentRotation.x) {
+            return new fudge.Vector3(1, 0, 0);
+        }
+        else if (goalRotationY < 0 && goalRotationY < currentRotation.y) {
+            return new fudge.Vector3(0, -1, 0);
+        }
+        else if (goalRotationY > 0 && goalRotationY > currentRotation.y) {
+            return new fudge.Vector3(0, 1, 0);
+        }
+        else {
+            blockIsRotating = false;
+        }
+    }
 })(L07_FudgeCraft_Fragments || (L07_FudgeCraft_Fragments = {}));
 //# sourceMappingURL=Main.js.map
