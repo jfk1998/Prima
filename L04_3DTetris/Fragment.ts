@@ -1,4 +1,4 @@
-namespace L07_FudgeCraft_Fragments {
+namespace L04_3DTetris {
     import ƒ = FudgeCore;
 
     export class Fragment extends ƒ.Node {

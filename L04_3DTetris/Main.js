@@ -1,6 +1,6 @@
 "use strict";
-var L07_FudgeCraft_Fragments;
-(function (L07_FudgeCraft_Fragments) {
+var L04_3DTetris;
+(function (L04_3DTetris) {
     var fudge = FudgeCore;
     window.addEventListener("load", load);
     let viewport;
@@ -9,6 +9,7 @@ var L07_FudgeCraft_Fragments;
     let goalRotationX = 0;
     let goalRotationY = 0;
     let currentRotation = fudge.Vector3.ZERO();
+    let gridMap = new Map();
     let rotation = new fudge.Vector3(0, 0, 0);
     function load(_event) {
         const canvas = document.querySelector("canvas");
@@ -19,23 +20,23 @@ var L07_FudgeCraft_Fragments;
         cmpCamera.pivot.lookAt(fudge.Vector3.ZERO());
         game = new fudge.Node("FudgeCraft");
         // let cube: Cube = new Cube(CUBE_TYPE.BLUE);
-        let fragment = new L07_FudgeCraft_Fragments.Fragment(0);
+        let fragment = new L04_3DTetris.Fragment(0);
         // fudge.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform());
         game.appendChild(fragment);
-        fragment = new L07_FudgeCraft_Fragments.Fragment(1);
+        fragment = new L04_3DTetris.Fragment(1);
         // fudge.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(3))));
         game.appendChild(fragment);
-        fragment = new L07_FudgeCraft_Fragments.Fragment(2);
+        fragment = new L04_3DTetris.Fragment(2);
         // fudge.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(-3))));
         game.appendChild(fragment);
-        fragment = new L07_FudgeCraft_Fragments.Fragment(3);
+        fragment = new L04_3DTetris.Fragment(3);
         // fudge.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(6))));
         game.appendChild(fragment);
-        fragment = new L07_FudgeCraft_Fragments.Fragment(4);
+        fragment = new L04_3DTetris.Fragment(4);
         // fudge.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(-6))));
         game.appendChild(fragment);
@@ -123,5 +124,5 @@ var L07_FudgeCraft_Fragments;
             blockIsRotating = false;
         }
     }
-})(L07_FudgeCraft_Fragments || (L07_FudgeCraft_Fragments = {}));
+})(L04_3DTetris || (L04_3DTetris = {}));
 //# sourceMappingURL=Main.js.map

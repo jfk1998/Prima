@@ -1,4 +1,4 @@
-namespace L07_FudgeCraft_Fragments {
+namespace L04_3DTetris {
     import fudge = FudgeCore;
     window.addEventListener("load", load);
     let viewport: fudge.Viewport;
@@ -7,6 +7,7 @@ namespace L07_FudgeCraft_Fragments {
     let goalRotationX = 0;
     let goalRotationY = 0;
     let currentRotation: fudge.Vector3 = fudge.Vector3.ZERO();
+    let gridMap = new Map<String, Cube>();
 
     let rotation: fudge.Vector3 = new fudge.Vector3(0,0,0);
     
@@ -89,38 +90,34 @@ namespace L07_FudgeCraft_Fragments {
         //let rotate: fudge.Vector3 = fudge.Vector3.ZERO();
         switch (_event.code) {
             case fudge.KEYBOARD_CODE.ARROW_UP:
-                if(!blockIsRotating)
-                {
+                if(!blockIsRotating) {
                     goalRotationX = 90;
-                    currentRotation = fudge.Vector3.ZERO()
-                    blockIsRotating = true
+                    currentRotation = fudge. Vector3.ZERO();
+                    blockIsRotating = true;
                 }
                 //rotation.x = -90;
                 break;
             case fudge.KEYBOARD_CODE.ARROW_DOWN:
-                if(!blockIsRotating)
-                {
+                if(!blockIsRotating) {
                     goalRotationX = -90;
-                    currentRotation = fudge.Vector3.ZERO()
+                    currentRotation = fudge.Vector3.ZERO();
                     blockIsRotating = true;
                 }      
                // rotation.x = 90;          
                 break;
             case fudge.KEYBOARD_CODE.ARROW_LEFT:
-                if(!blockIsRotating)
-                {
+                if(!blockIsRotating) {
                     goalRotationY = 90;
-                    currentRotation = fudge.Vector3.ZERO()
+                    currentRotation = fudge.Vector3.ZERO();
                     blockIsRotating = true;
                 }  
                // rotation.y = -90;
                 break;                
             case fudge.KEYBOARD_CODE.ARROW_RIGHT:
-                if(!blockIsRotating)
-                {
+                if(!blockIsRotating){
                     goalRotationY = -90;
-                    currentRotation = fudge.Vector3.ZERO()
-                    blockIsRotating = true
+                    currentRotation = fudge.Vector3.ZERO();
+                    blockIsRotating = true;
                 }   
                // rotation.y = 90;
                 break;
@@ -131,8 +128,7 @@ namespace L07_FudgeCraft_Fragments {
             }
     }
 
-    function getRotationForBlock(): fudge.Vector3
-    {
+    function getRotationForBlock(): fudge.Vector3 {
 
         if(goalRotationX < 0 && goalRotationX < currentRotation.x)
         {
@@ -152,4 +148,6 @@ namespace L07_FudgeCraft_Fragments {
         }
     
     }
+
+
 }
