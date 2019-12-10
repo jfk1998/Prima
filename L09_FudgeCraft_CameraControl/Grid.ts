@@ -41,5 +41,14 @@ namespace L09_FudgeCraft_CameraControl {
             let key: string = position.toString();
             return key;
         }
+
+    
+        detectCombos(_GridElements: GridElement[])
+        {
+           let element: GridElement = _GridElements[0];
+           let combos: Combo[];
+
+            
+        }
     }
 }
